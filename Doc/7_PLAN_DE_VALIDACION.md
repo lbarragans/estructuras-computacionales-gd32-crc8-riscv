@@ -1,108 +1,43 @@
 # 7. Plan de validacion
 
-## Vector principal
+## Casos comunes
 
-```text
-Entrada:  31 32 33 34 35 36 37 38 39
-ASCII:    1  2  3  4  5  6  7  8  9
-CRC-8:    F4
-```
+Todas las implementaciones deben comprobar:
 
-Parametros:
+| Caso | Resultado esperado |
+|---|---|
+| `"123456789"` | `0xF4` |
+| `"123456788"` | diferente de `0xF4` |
+| longitud cero | `0x00` |
 
-```text
-poly   = 0x07
-init   = 0x00
-refin  = false
-refout = false
-xorout = 0x00
-```
+Parametros: polinomio `0x07`, init `0x00`, sin reflexion y xorout `0x00`.
 
-## Casos adicionales
+## Referencia original
 
-### Longitud cero
+1. Compilar con `build-debug`.
+2. Verificar `g_crc_c == 0xF4` y `g_crc_asm == 0xF4`.
+3. Confirmar `g_error_detected == 1` y `g_results_match == 1`.
+4. Programar la placa y comprobar la trama luminosa.
 
-Con init `0x00` y xorout `0x00`:
+## Ensamblador RISC-V puro
 
-```text
-CRC(empty) = 0x00
-```
+1. Integrar `Ensamblador_RISCV_Puro/main.S` sin C de aplicacion.
+2. Observar los bytes cargados con `lbu` y el residuo parcial en `t0`.
+3. Verificar `g_crc_ensamblador == 0xF4`.
+4. Verificar que `g_crc_alterado` sea diferente.
+5. Comprobar `g_resultados_ok == 1` y validar PC13 en placa.
 
-### Un byte
+## FreeRTOS puro
 
-Comparar todas las implementaciones para varios valores:
+1. Integrar kernel, port RISC-V, heap, configuración y tick.
+2. Verificar la creacion de las tres tareas y las dos queues.
+3. Confirmar el flujo productor–procesador–validador.
+4. Verificar `g_freertos_crc == 0xF4` y `g_freertos_ok == 1`.
+5. Confirmar que la temporizacion usa `vTaskDelay` y no espera activa.
+6. Programar la placa y comprobar la trama luminosa.
 
-```text
-0x00
-0x01
-0x80
-0xFF
-```
+## Criterio de cierre
 
-### Mensaje alterado
-
-```text
-"123456788"
-```
-
-Debe producir un CRC distinto al del mensaje original.
-
-## Equivalencia
-
-Para cada vector:
-
-```text
-crc_bitwise
-crc_table256
-crc_nibble
-crc_asm
-crc_streaming
-```
-
-deben coincidir cuando usan los mismos parametros.
-
-## Streaming
-
-Probar:
-
-```text
-"123" + "456" + "789"
-```
-
-y verificar:
-
-```text
-CRC("123456789") == CRC_streaming("123","456","789")
-```
-
-## Assembly
-
-Observar:
-
-- `a0` puntero/retorno;
-- `a1` longitud;
-- `t0` CRC;
-- `t1` byte;
-- `t2` contador;
-- `t3` bit/mascara.
-
-## Rendimiento
-
-No afirmar que una version es mas rapida sin medir.
-
-Posibles metricas:
-
-- ciclos;
-- instrucciones en `.lst`;
-- tiempo mediante GPIO;
-- bytes de codigo;
-- bytes de tabla.
-
-## Madurez
-
-- Base actual
-- Fuente lista
-- Analisis
-- Integracion pendiente
-- Validada por compilacion
-- Validada en placa
+Las tres rutas deben producir el mismo CRC principal y detectar el mensaje
+alterado. No se declara una ruta validada en hardware sin evidencia de
+compilacion, programacion y medicion en la placa.
