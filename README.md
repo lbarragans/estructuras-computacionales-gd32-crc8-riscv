@@ -105,11 +105,39 @@ Assembly de la referencia.
 | Implementacion | Estado |
 |---|---|
 | Referencia C + Assembly | funcional y conservada como compilacion principal |
-| Ensamblador RISC-V puro | fuente lista; integracion y prueba en placa pendientes |
-| FreeRTOS puro | fuente lista; kernel/port e integracion pendientes |
+| Ensamblador RISC-V puro | compilable y programable con `build_variant.ps1` |
+| FreeRTOS puro | compilable y programable con `build_freertos.ps1` y MSDK V1.0.3g |
 
 ## 8. Lenguajes
 
 C y Assembly son lenguajes reales de las implementaciones. FreeRTOS es una
 tecnologia/RTOS. PowerShell, CMake, JSON y Markdown permanecen excluidos de los
 porcentajes mediante `.gitattributes`.
+
+## Ejecutar las variantes
+
+Referencia original por JTAG/OpenOCD:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\\tools\\build_variant.ps1 -Variant original -Flash
+```
+
+Assembly puro por JTAG/OpenOCD:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\\tools\\build_variant.ps1 -Variant assembly -Flash
+```
+
+FreeRTOS usa el port oficial del SDK WiFi V1.0.3g:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\build_freertos.ps1 -Clean -Flash
+```
+
+Resultado esperado: ocho pulsos que representan `0xF4 = 11110100`; los bits
+1 son pulsos largos y los bits 0 son pulsos cortos.
+
+## Guía central de ejecución
+
+La instalación y los procedimientos completos de Assembly/FreeRTOS están en la
+[guía central GD32VW553](https://github.com/lbarragans/gd32vw553-vscode-cmake-guide).

@@ -41,3 +41,15 @@ Parametros: polinomio `0x07`, init `0x00`, sin reflexion y xorout `0x00`.
 Las tres rutas deben producir el mismo CRC principal y detectar el mensaje
 alterado. No se declara una ruta validada en hardware sin evidencia de
 compilacion, programacion y medicion en la placa.
+
+## Comandos de validacion en VS Code
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\build_variant.ps1 -Variant original -Flash
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\build_variant.ps1 -Variant assembly -Flash
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\build_freertos.ps1 -Clean -Flash
+```
+
+Cada programacion debe terminar con `Verified OK`. La salida correcta muestra
+ocho pulsos correspondientes a `11110100`; una secuencia rapida de error no
+debe aparecer.

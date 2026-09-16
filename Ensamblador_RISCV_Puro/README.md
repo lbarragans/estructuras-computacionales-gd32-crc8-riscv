@@ -11,5 +11,5 @@ muestra los ocho bits de `0xF4`; si fallan, parpadea rapidamente.
 Conceptos: secciones `.text/.rodata/.bss`, `lbu`, punteros, XOR, shifts,
 branches, ABI, subrutinas, MMIO y depuracion de registros.
 
-La integracion con startup, linker y SDK queda pendiente de validacion en la
-placa.
+La seleccion `APP_VARIANT=assembly` conserva startup, linker y SDK. La
+validacion fisica final se realiza con `tools/build_variant.ps1`.

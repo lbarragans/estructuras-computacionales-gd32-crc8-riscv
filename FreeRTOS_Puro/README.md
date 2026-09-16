@@ -16,5 +16,5 @@ La implementacion utiliza `xTaskCreate`, `xQueueCreate`, `xQueueSend`,
 `xQueueReceive` y `vTaskDelay`. No llama la rutina Assembly de la referencia y
 no utiliza espera activa.
 
-La integracion del kernel, port RISC-V, heap, tick y `FreeRTOSConfig.h` queda
-pendiente de validacion en placa.
+La integracion usa el kernel, port Nuclei/ECLIC, heap y tick del MSDK oficial
+V1.0.3g. La validacion fisica final se realiza siguiendo `INTEGRACION.md`.
